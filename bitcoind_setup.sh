@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Bitcoin Core Node Setup Script
-# Tested on Ubuntu 20.04 / 22.04
+# Tested on Ubuntu 24.04
 
 set -e
 
@@ -26,7 +26,7 @@ apt install -y git build-essential libtool autotools-dev automake pkg-config lib
     libboost-program-options-dev libboost-test-dev libboost-thread-dev libminiupnpc-dev libzmq3-dev python3
 
 # Clone Bitcoin Core repository
-echo "[+] Cloning Bitcoin Core repository..."
+echo "[+] Cloning Bitcoin Core repository using v27.2..."
 git clone -b v27.2 https://github.com/bitcoin/bitcoin.git
 
 # Navigate to the repository
@@ -38,7 +38,9 @@ echo "[+] Running build process. This may take a while..."
 ./autogen.sh
 ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" --enable-cxx --with-zmq --without-gui \
     --disable-shared --with-pic --disable-tests --disable-bench --enable-upnp-default --disable-wallet
+echo "[+] This is the tedious part..."
 make -j "$(($(nproc)+1))"
+echo "[+] Almost done!"
 sudo make install
 
 # Generate RPC password
@@ -113,7 +115,7 @@ peerbloomfilters=0
 permitbaremultisig=0
 
 # Set the RPC auth to what was set above
-$RPC_AUTH
+rpcauth=$RPC_AUTH
 
 # Turn on the RPC server
 server=1
@@ -171,13 +173,34 @@ cat <<"EOF"
 
 [+] Bitcoin Core built, configured, and service enabled successfully!
 
-        .--.
-       |o_o |
-       |:_/ |
-      //   \ \
-     (|     | )
-    /'\_   _/`\
-    \___)=(___/
+             ________________________________________________
+            /                                                \
+           |    _________________________________________     |
+           |   |                                         |    |
+           |   |       ___(                        )     |    |
+           |   |      (                          _)      |    |
+           |   |     (_                       __))       |    |
+           |   |       ((                _____)          |    |
+           |   |         (_________)----'                |    |
+           |   |              _/  /                      |    |
+           |   |             /  _/                       |    |
+           |   |           _/  /                         |    |
+           |   |          / __/                          |    |
+           |   |        _/ /                             |    |
+           |   |       /__/                              |    |
+           |   |      /'                                 |    |
+           |   |_________________________________________|    |
+           |                                                  |
+            \_________________________________________________/
+                   \___________________________________/
+                ___________________________________________
+             _-'    .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.  --- `-_
+          _-'.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.--.  .-.-.`-_
+       _-'.-.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-`__`. .-.-.-.`-_
+    _-'.-.-.-.-. .-----.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-----. .-.-.-.-.`-_
+ _-'.-.-.-.-.-. .---.-. .-------------------------. .-.---. .---.-.-.-.`-_
+:-------------------------------------------------------------------------:
+`---._.-------------------------------------------------------------._.---'
 
 [+] Your Bitcoin node is now up and running!
 EOF

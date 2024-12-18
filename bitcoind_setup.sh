@@ -10,6 +10,7 @@ BITCOIN_DIR="$HOME/.bitcoin"
 BITCOIN_CONF="$BITCOIN_DIR/bitcoin.conf"
 RPC_AUTH=""
 NETWORK=""
+SERVICE_FILE="/etc/systemd/system/bitcoind.service"
 
 # Check if user is root
 echo "[+] Checking for root privileges..."
@@ -26,22 +27,30 @@ apt install -y git build-essential libtool autotools-dev automake pkg-config lib
     libboost-program-options-dev libboost-test-dev libboost-thread-dev libminiupnpc-dev libzmq3-dev python3
 
 # Clone Bitcoin Core repository
-echo "[+] Cloning Bitcoin Core repository using v27.2..."
-git clone -b v27.2 https://github.com/bitcoin/bitcoin.git
+echo "[+] Checking for Bitcoin Core repository..."
+if [[ ! -d "bitcoin" ]]; then
+    echo "[+] Cloning Bitcoin Core repository using v27.2..."
+    git clone -b v27.2 https://github.com/bitcoin/bitcoin.git
+else
+    echo "[!] Bitcoin repository already exists. Skipping clone."
+fi
 
 # Navigate to the repository
-echo "[+] Navigating to the Bitcoin Core repository..."
 cd bitcoin/
 
 # Build Bitcoin Core from source
-echo "[+] Running build process. This may take a while..."
-./autogen.sh
-./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" --enable-cxx --with-zmq --without-gui \
-    --disable-shared --with-pic --disable-tests --disable-bench --enable-upnp-default --disable-wallet
-echo "[+] This is the tedious part..."
-make -j "$(($(nproc)+1))"
-echo "[+] Almost done!"
-sudo make install
+if [[ ! -f "/usr/local/bin/bitcoind" ]]; then
+    echo "[+] Building Bitcoin Core. This may take a while..."
+    ./autogen.sh
+    ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" --enable-cxx --with-zmq --without-gui \
+        --disable-shared --with-pic --disable-tests --disable-bench --enable-upnp-default --disable-wallet
+    echo "[+] This is the tedious part..."
+    make -j "$(($(nproc)+1))"
+    echo "[+] Almost done!"
+    sudo make install
+else
+    echo "[!] bitcoind is already installed. Skipping build."
+fi
 
 # Generate RPC password
 echo "[+] Generating RPC password for other services to connect to bitcoind..."
@@ -79,7 +88,15 @@ while true; do
 done
 
 # Create bitcoin.conf file
-echo "[+] Creating the bitcoin.conf file at $BITCOIN_CONF..."
+if [[ -f "$BITCOIN_CONF" ]]; then
+    read -p "[!] bitcoin.conf already exists. Overwrite? (yes/no): " OVERWRITE
+    if [[ "$OVERWRITE" != "yes" ]]; then
+        echo "[!] Skipping bitcoin.conf creation."
+    else
+        echo "[+] Overwriting bitcoin.conf..."
+    fi
+fi
+
 mkdir -p $BITCOIN_DIR
 cat <<EOF > $BITCOIN_CONF
 # Set the best block hash here:
@@ -139,12 +156,11 @@ EOF
 
 # Inform user where the configuration file is located
 echo "[+] Your bitcoin.conf file has been created at: $BITCOIN_CONF"
-echo "[!] You can review or modify this file as needed."
 
 # Create systemd service file
-echo "[+] Creating systemd service file for bitcoind..."
-SERVICE_FILE="/etc/systemd/system/bitcoind.service"
-cat <<EOF > $SERVICE_FILE
+if [[ ! -f "$SERVICE_FILE" ]]; then
+    echo "[+] Creating systemd service file for bitcoind..."
+    cat <<EOF > $SERVICE_FILE
 [Unit]
 Description=Bitcoin daemon
 After=network.target
@@ -161,12 +177,19 @@ Group=sudo
 [Install]
 WantedBy=multi-user.target
 EOF
+else
+    echo "[!] Systemd service file already exists. Skipping creation."
+fi
 
 # Enable, reload, and start systemd service
-echo "[+] Enabling and starting the bitcoind service..."
 systemctl enable bitcoind
 systemctl daemon-reload
-systemctl start bitcoind
+if ! systemctl is-active --quiet bitcoind; then
+    systemctl start bitcoind
+    echo "[+] bitcoind service started."
+else
+    echo "[!] bitcoind service is already running."
+fi
 
 # Done
 cat <<"EOF"

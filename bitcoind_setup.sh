@@ -63,7 +63,7 @@ fi
 
 # Run the RPC auth script
 RPC_OUTPUT=$(python3 ./rpcauth.py bitcoinrpc)
-RPC_AUTH=$(echo "$RPC_OUTPUT" | grep -oP 'rpcauth=\S+')
+RPC_AUTH=$(echo "$RPC_OUTPUT" | grep -oP '(?<=rpcauth=)\S+')
 RPC_PASSWORD=$(echo "$RPC_OUTPUT" | awk '/Your password:/ {getline; print $1}' | tr -d '[:space:]')
 
 # Display the password to the user

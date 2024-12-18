@@ -29,15 +29,16 @@ apt install -y git build-essential libtool autotools-dev automake pkg-config lib
 
 # Clone Bitcoin Core repository
 echo "[+] Checking for Bitcoin Core repository..."
-if [[ ! -d "bitcoin" ]]; then
-    echo "[+] Cloning Bitcoin Core repository using v27.2..."
-    git clone -b v27.2 https://github.com/bitcoin/bitcoin.git
+if [[ ! -d "$USER_HOME/bitcoin" ]]; then
+    echo "[+] Cloning Bitcoin Core repository using v27.2 into $USER_HOME..."
+    git clone -b v27.2 https://github.com/bitcoin/bitcoin.git "$USER_HOME/bitcoin"
+    sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} "$USER_HOME/bitcoin"
 else
     echo "[!] Bitcoin repository already exists. Skipping clone."
 fi
 
 # Navigate to the repository
-cd bitcoin/
+cd "$USER_HOME/bitcoin/"
 
 # Build Bitcoin Core from source
 if [[ ! -f "/usr/local/bin/bitcoind" ]]; then
@@ -52,6 +53,9 @@ if [[ ! -f "/usr/local/bin/bitcoind" ]]; then
 else
     echo "[!] bitcoind is already installed. Skipping build."
 fi
+
+# Head back to the user home directory
+cd "$USER_HOME"
 
 # Generate RPC password
 echo "[+] Generating RPC password for other services to connect to bitcoind..."
@@ -154,6 +158,9 @@ txindex=0
 zmqpubrawblock=tcp://127.0.0.1:28332
 zmqpubrawtx=tcp://127.0.0.1:28333
 EOF
+
+# Set ownership of the configuration file to the user
+sudo chown ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $BITCOIN_CONF
 
 # Inform user where the configuration file is located
 echo "[+] Your bitcoin.conf file has been created at: $BITCOIN_CONF"

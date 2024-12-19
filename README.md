@@ -44,7 +44,7 @@ When running a pruned node the below line should be uncommented in the bitcoin.c
 
 This step prepares the server. A new ubuntu user with sudo access is created. SSH keys are added. security is tightened by disabling root login and password login.
 
-This step can be done by following along with the checklist file found at /checklists/server-setup-checklist.txt or by running the setup bash script at /scripts/server_setup.sh 
+This step can be done by following along with the checklist file found at [/checklists/server-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/server-setup-checklist.txt) or by running the setup bash script at [/scripts/server_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/server_setup.sh) 
 
 ### Server Prep Helper Script
 
@@ -64,7 +64,7 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 This step installs and runs bitcoind. The server is brought up to date, bitcoind dependancies are installed, the repo is cloned and bitcoind is built, a config file is created, a systemd .service file is created and bitcoind is run. 
 
-This step can be done by following along with the checklist file found at /checklists/bitcoind-setup-checklist.txt or by running the setup bash script at /scripts/bitcoind_setup.sh 
+This step can be done by following along with the checklist file found at [/checklists/bitcoind-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-checklist.txt) or by running the setup bash script at [/scripts/bitcoind_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup.sh) 
 
 ### Bitcoind Setup Helper Script
 
@@ -84,7 +84,7 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 This step installs and runs litd. GoLnag and NodeJS are installed, the repo is cloned and litd is built, a lit.conf file is generated, an LND wallet is created, the password saved, and the config set to auto unlock at startup, a systemd .service file is created, and litd is started!
 
-This step can be done by following along with the checklist file found at /checklists/litd-setup-checklist.txt or by running the setup bash script at /scripts/litd_setup.sh 
+This step can be done by following along with the checklist file found at [/checklists/litd-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-checklist.txt) or by running the setup bash script at [/scripts/litd_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup.sh) 
 
 ### Litd Setup Helper Script
 

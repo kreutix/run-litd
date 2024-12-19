@@ -1,0 +1,21 @@
+Server Setup Checklist
+
+- [ ] Create a new ubuntu user
+  -- $ adduser ubuntu
+- [ ] Give the ubuntu user sudo addess by adding the below line to the /etc/sudoers file below the same entry for root. 
+  -- ubuntu  ALL=(ALL:ALL) ALL
+- [ ] Backup wallet seed phrase securely
+- [ ] Add user password $ sudo passwd
+  -- $ sudo passwd
+- [ ] Switch to the ubuntu user 
+- [ ] $ su ubuntu
+- [ ] Add your teams keys to the authorized keys file
+  -- $ mkdir .ssh
+  -- $ touch .ssh/authorized_keys
+  -- $ vim .ssh/authorized_keys 
+- [ ] For security, disable root login and password login via the 
+  -- $ sudo vim /etc/ssh/sshd_config
+  -- Set PermitRootLogin to no
+  -- Set PasswordAuthentication to no
+- [ ] Restart ssh service
+  -- $ sudo systemctl restart ssh

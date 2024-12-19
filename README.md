@@ -74,7 +74,7 @@ Don't forget to make executable before trying to run it.
 
 ```$ chmod +x bitcoind_setup.sh``` 
 
-The script should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user(a new user called ubuntu if the server_setup script was used).
+The script should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 
 ```$ sudo ./bitcoind_setup.sh```
 
@@ -82,14 +82,17 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 ## Litd Setup
 
+This step installs and runs litd. GoLnag and NodeJS are installed, the repo is cloned and litd is built, a lit.conf file is generated, an LND wallet is created, the password saved, and the config set to auto unlock at startup, a systemd .service file is created, and litd is started!
 
-### Bitcoind Setup Helper Script
+This step can be done by following along with the checklist file found at /checklists/litd-setup-checklist.txt or by running the setup bash script at /scripts/litd_setup.sh 
+
+### Litd Setup Helper Script
 
 Don't forget to make executable before trying to run it. 
 
 ```$ chmod +x litd_setup.sh``` 
 
-The script should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user(a new user called ubuntu if the server_setup script was used).
+The script should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 
 ```$ sudo ./litd_setup.sh```
 

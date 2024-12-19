@@ -1,0 +1,17 @@
+[Unit]
+Description=Litd Terminal Daemon
+Requires=bitcoind.service
+After=bitcoind.service
+
+[Service]
+ExecStart=/home/ubuntu/go/bin/litd litd 
+
+User=ubuntu
+Group=ubuntu
+
+Type=simple
+Restart=always
+RestartSec=120
+
+[Install]
+WantedBy=multi-user.target

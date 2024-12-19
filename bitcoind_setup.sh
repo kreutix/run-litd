@@ -178,7 +178,6 @@ ExecStart=/usr/local/bin/bitcoind
 Type=forking
 Restart=on-failure
 
-# Run as ubuntu:ubuntu
 User=ubuntu
 Group=sudo
 

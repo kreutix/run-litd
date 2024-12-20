@@ -20,9 +20,12 @@ Litd Setup Checklist
   -- $ curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
   -- $ sudo -E bash nodesource_setup.sh
   -- $ sudo apt-get install -y nodejs
-- [ ] check that npm and NodeJS were installed and is a stable version
+- [ ] Install Yarn
+  -- $ sudo npm install -g yarn
+- [ ] check that npm, yarn and NodeJS were installed and is a stable version
 - [ ] $ node -v
 - [ ] $ npm -v
+- [ ] $ yarn --version
 - [ ] Clone the lightning-terminal repo
    -- $ git clone https://github.com/lightninglabs/lightning-terminal.git
   -- $ cd lightning-terminal/ 

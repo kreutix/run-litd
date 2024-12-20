@@ -56,6 +56,21 @@ else
     fi
 fi
 
+# Install Yarn
+echo "[+] Checking if Yarn is installed..."
+if command -v yarn &> /dev/null; then
+    echo "[+] Yarn is already installed. Version: $(yarn --version)"
+else
+    echo "[+] Yarn is not installed. Installing Yarn..."
+    if sudo npm install -g yarn; then
+        echo "[+] Yarn installed successfully."
+        echo "[+] Current Yarn version: $(yarn --version)"
+    else
+        echo "[-] Failed to install Yarn. Exiting."
+        exit 1
+    fi
+fi
+
 # Clone and build litd
 echo "[+] Checking if Lightning Terminal is already installed..."
 if command -v litd &> /dev/null; then

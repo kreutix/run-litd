@@ -23,34 +23,92 @@ if id "$NEW_USER" &>/dev/null; then
 else
   echo "Creating user $NEW_USER..."
   adduser --gecos "" $NEW_USER
+  adduser --gecos "" $NEW_USER && passwd $NEW_USER
   echo "$NEW_USER ALL=(ALL:ALL) ALL" >> /etc/sudoers
   echo "User $NEW_USER added and given sudo access."
 fi
 
 # 2. Set up SSH authorized keys
-echo "Setting up .ssh/authorized_keys for $NEW_USER..."
-mkdir -p $SSH_DIR
-chmod 700 $SSH_DIR
+if [ ! -d "$SSH_DIR" ]; then
+  echo "Setting up .ssh directory for $NEW_USER..."
+  mkdir -p $SSH_DIR
+  chmod 700 $SSH_DIR
+  chown -R $NEW_USER:$NEW_USER $SSH_DIR
+else
+  echo ".ssh directory for $NEW_USER already exists."
+fi
 
-# Add team keys
+if [ ! -f "$AUTHORIZED_KEYS" ]; then
+  echo "Creating authorized_keys file for $NEW_USER..."
+  touch $AUTHORIZED_KEYS
+  chmod 600 $AUTHORIZED_KEYS
+  chown $NEW_USER:$NEW_USER $AUTHORIZED_KEYS
+else
+  echo "authorized_keys file for $NEW_USER already exists. Checking for duplicate keys."
+fi
+
+# Add team keys if not already present
 for KEY in "${TEAM_KEYS[@]}"; do
-  echo "$KEY" >> $AUTHORIZED_KEYS
+  if ! grep -qxF "$KEY" $AUTHORIZED_KEYS; then
+    echo "$KEY" >> $AUTHORIZED_KEYS
+    echo "Added key to authorized_keys."
+  else
+    echo "Key already exists in authorized_keys. Skipping."
+  fi
 done
 
-chmod 600 $AUTHORIZED_KEYS
-chown -R $NEW_USER:$NEW_USER $SSH_DIR
-echo "SSH keys added for $NEW_USER."
+echo "SSH keys verified for $NEW_USER."
 
 # 3. Disable root login and password authentication
-echo "Disabling root login and password authentication..."
 SSHD_CONFIG="/etc/ssh/sshd_config"
 
-sed -i "s/^PermitRootLogin.*/PermitRootLogin no/" $SSHD_CONFIG
-sed -i "s/^#PasswordAuthentication.*/PasswordAuthentication no/" $SSHD_CONFIG
-sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/" $SSHD_CONFIG
+if grep -q "^PermitRootLogin yes" $SSHD_CONFIG; then
+  echo "Disabling root login..."
+  sed -i "s/^#\?PermitRootLogin.*/PermitRootLogin no/" $SSHD_CONFIG
+else
+  echo "Root login is already disabled."
+fi
+
+if grep -q "^#PasswordAuthentication yes" $SSHD_CONFIG || grep -q "^PasswordAuthentication yes" $SSHD_CONFIG; then
+  echo "Disabling password authentication..."
+  sed -i "s/^#PasswordAuthentication.*/PasswordAuthentication no/" $SSHD_CONFIG
+  sed -i "s/^PasswordAuthentication.*/PasswordAuthentication no/" $SSHD_CONFIG
+else
+  echo "Password authentication is already disabled."
+fi
 
 # Restart SSH service
-echo "Restarting SSH service..."
-systemctl restart ssh
+if systemctl is-active --quiet ssh; then
+  echo "Warning: Restarting the SSH service may disconnect active sessions. Proceeding..."
+  systemctl restart ssh
+else
+  echo "SSH service is not active. Starting it..."
+  systemctl start ssh
+fi
 
 echo "Setup completed successfully."
+
+cat <<"EOF"
+
+             .------~---------~-----.
+             | .------------------. |
+             | |                  | |
+             | |   .'''.  .'''.   | |
+             | |   :    ''    :   | |
+             | |   :          :   | |
+             | |    '.      .'    | |
+             | |      '.  .'      | |
+             | |        ''        | |  
+             | `------------------' |  
+             `.____________________.'  
+               `-------.  .-------'    
+        .--.      ____.'  `.____       
+      .-~--~-----~--------------~----. 
+      |     .---------.|.--------.|()| 
+      |     `---------'|`-o-=----'|  | 
+      |-*-*------------| *--  (==)|  | 
+      |                |          |  | 
+      `------------------------------' 
+
+Your server is ready for the next script!
+EOF

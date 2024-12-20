@@ -2,6 +2,8 @@
 
 Notes and helper scripts for setting up and running a Litd node.
 
+Important!: These examples and scripts are designed to help developers get set up quickly to begin testing and application development. Please do not trust these file on your production build.  
+
 ## Contents
 
 1. [Instructions](https://github.com/HannahMR/run-litd/#instructions)

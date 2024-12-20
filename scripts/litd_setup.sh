@@ -101,6 +101,10 @@ echo "[+] Ensuring the ~/.lnd directory exists..."
 if [[ ! -d $LND_DIR ]]; then
     mkdir -p $LND_DIR
     echo "[+] Created directory at $LND_DIR."
+    # Ensure ~/.lnd directory is owned by the user
+    echo "[+] Ensuring ownership of $LND_DIR..."
+    sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $LND_DIR
+    echo "[+] Ownership set to ${SUDO_USER:-$USER} for $LND_DIR."
 else
     echo "[!] Directory $LND_DIR already exists."
 fi
@@ -114,15 +118,14 @@ else
     openssl rand -hex 21 > $WALLET_PASSWORD_FILE
     if [[ -f $WALLET_PASSWORD_FILE ]]; then
         echo "[+] Wallet password generated and saved to $WALLET_PASSWORD_FILE."
+        # Ensure wallet password file is owned by the user
+        echo "[+] Ensuring ownership of $WALLET_PASSWORD_FILE..."
+        sudo chown ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $WALLET_PASSWORD_FILE
+        echo "[+] Ownership set to ${SUDO_USER:-$USER} for $WALLET_PASSWORD_FILE."
     else
         echo "[-] Failed to generate wallet password. Exiting."
         exit 1
     fi
-fi
-    echo "[+] Wallet password generated and saved to $WALLET_PASSWORD_FILE."
-else
-    echo "[-] Failed to generate wallet password. Exiting."
-    exit 1
 fi
 
 # Configure litd
@@ -132,6 +135,10 @@ echo "[+] Step 4: Configuring Lightning Terminal (litd)..."
 if [[ ! -d $LIT_CONF_DIR ]]; then
     mkdir -p $LIT_CONF_DIR
     echo "[+] Created configuration directory at $LIT_CONF_DIR."
+    # Ensure .lit directory is owned by the user
+    echo "[+] Ensuring ownership of $LIT_CONF_DIR..."
+    sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $LIT_CONF_DIR
+    echo "[+] Ownership set to ${SUDO_USER:-$USER} for $LIT_CONF_DIR."
 else
     echo "[!] $LIT_CONF_DIR already exists."
 fi
@@ -208,6 +215,11 @@ lnd.protocol.custom-message=17"
 
     echo "$CONFIG_CONTENT" > $LIT_CONF_FILE
     echo "[+] Configuration file created at $LIT_CONF_FILE."
+
+    # Ensure configuration file is owned by the user
+    echo "[+] Ensuring ownership of $LIT_CONF_FILE..."
+    sudo chown ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $LIT_CONF_FILE
+    echo "[+] Ownership set to ${SUDO_USER:-$USER} for $LIT_CONF_FILE."
 fi
 
 # Start litd and initialize wallet creation

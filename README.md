@@ -78,6 +78,8 @@ This script defaults to running a pruned node set to 50GB. If you would like to 
 
 This script runs checks to see what's been done as it goes, and so should be safe to run multiple times in case any run has been interupted. 
 
+If you originally cloned this repo to /root you may want to move it to /home/ubuntu and change the owner for easier running. 
+
 Don't forget to make executable before trying to run it. 
 
 ```$ chmod +x bitcoind_setup.sh``` 

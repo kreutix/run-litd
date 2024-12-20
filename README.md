@@ -72,6 +72,10 @@ This step can be done by following along with the checklist file found at [/chec
 
 Please double check the default values included in the config file in the script, lines 107-160, before running the script. Values such as network, passwords, etc will be selected/generated when the scritp runs. 
 
+You will want to run this script as the new users that was created in the server setup process.
+
+This script defaults to running a pruned node set to 50GB. If you would like to run a full node or storge the blockchain data on an attached disk, you will need to edit the script accordingly. 
+
 This script runs checks to see what's been done as it goes, and so should be safe to run multiple times in case any run has been interupted. 
 
 Don't forget to make executable before trying to run it. 

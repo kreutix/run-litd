@@ -103,6 +103,7 @@ if [[ -f "$BITCOIN_CONF" ]]; then
 fi
 
 mkdir -p $BITCOIN_DIR
+sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $BITCOIN_DIR
 cat <<EOF > $BITCOIN_CONF
 # Set the best block hash here:
 #assumevalid=
@@ -148,8 +149,8 @@ shrinkdebuglog=1
 # Set signet if needed
 $( [[ "$NETWORK" == "signet" ]] && echo "signet=1" || echo "#signet=1" )
 
-# Prune the blockchain. Example prune to 80GB
-#prune=80000
+# Prune the blockchain. Example prune to 50GB
+prune=50000
 
 # Turn on transaction lookup index, if pruned node is off. 
 txindex=0
@@ -178,7 +179,7 @@ ExecStart=/usr/local/bin/bitcoind
 Type=forking
 Restart=on-failure
 
-User=ubuntu
+User=${SUDO_USER:-$USER}
 Group=sudo
 
 [Install]

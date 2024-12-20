@@ -26,9 +26,18 @@ else
     if [[ -f go$GO_VERSION.linux-amd64.tar.gz ]]; then
         sudo tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
         rm go$GO_VERSION.linux-amd64.tar.gz
-        echo "GOPATH=$HOME/go" >> ~/.profile
-        echo "PATH=\"$HOME/bin:$HOME/go/bin:$HOME/.local/bin:/usr/local/go/bin:$PATH\"" >> ~/.profile
+        
+        # Check and append Go path info to .profile
+        if ! grep -q "export GOPATH=\$HOME/go" ~/.profile; then
+            echo "export GOPATH=\$HOME/go" >> ~/.profile
+        fi
+        if ! grep -q "export PATH=\$HOME/go/bin:/usr/local/go/bin:\$PATH" ~/.profile; then
+            echo "export PATH=\$HOME/go/bin:/usr/local/go/bin:\$PATH" >> ~/.profile
+        fi
+        
+        # Source .profile to make changes effective in the current session
         source ~/.profile
+
         echo "[+] Go $GO_VERSION installed successfully!"
         echo "[+] Current Go version: $(go version)"
     else
@@ -76,6 +85,17 @@ echo "[+] Checking if Lightning Terminal is already installed..."
 if command -v litd &> /dev/null; then
     echo "[+] Lightning Terminal (litd) is already installed. Skipping build."
 else
+    echo "[+] Ensuring $USER_HOME/go directory exists and is owned by the current user..."
+    if [[ -d "$USER_HOME/go" ]]; then
+        echo "[+] Directory $USER_HOME/go already exists."
+    else
+        echo "[+] Creating $USER_HOME/go directory..."
+        mkdir -p "$USER_HOME/go"
+        echo "[+] Directory $USER_HOME/go created successfully."
+    fi
+    echo "[+] Ensuring proper ownership of $USER_HOME/go..."
+    sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} "$USER_HOME/go"
+
     echo "[+] Checking if Lightning Terminal repository already exists..."
     if [[ -d "$USER_HOME/lightning-terminal" ]]; then
         echo "[!] Repository already exists. Using existing directory."

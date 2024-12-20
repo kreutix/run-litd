@@ -14,8 +14,9 @@ NEW_USER="ubuntu"
 SSH_DIR="/home/$NEW_USER/.ssh"
 AUTHORIZED_KEYS="$SSH_DIR/authorized_keys"
 TEAM_KEYS=(
-    # Add your team's keys here
-) 
+    "Key one"
+    "Key two"
+)
 
 # 1. Add a new user
 if id "$NEW_USER" &>/dev/null; then

@@ -14,6 +14,7 @@ WALLET_PASSWORD_FILE="$LND_DIR/wallet_password"
 GO_VERSION="1.21.0"
 NODE_VERSION="22.x"  # Ensure an even-numbered, stable release
 LITD_VERSION="v0.13.6-alpha"  # Version of litd to be installed
+SERVICE_FILE="/etc/systemd/system/litd.service"
 
 # Install Go
 echo "[+] Checking if Go $GO_VERSION is installed..."
@@ -142,6 +143,7 @@ else
     echo "[+] Generating new configuration file..."
 
     read -p "Is your bitcoind backend running on mainnet or signet? [mainnet/signet]: " NETWORK
+    NETWORK=$(echo "$NETWORK" | tr '[:upper:]' '[:lower:]')
     if [[ $NETWORK != "mainnet" && $NETWORK != "signet" ]]; then
         echo "[-] Invalid network selection. Please choose either 'mainnet' or 'signet'."
         exit 1
@@ -149,9 +151,17 @@ else
 
     read -s -p "Enter the RPC password for your bitcoind backend: " RPC_PASSWORD
     echo
+    if [[ -z $RPC_PASSWORD ]]; then
+        echo "[-] RPC password cannot be empty. Exiting."
+        exit 1
+    fi
 
     read -s -p "Enter a UI password for litd: " UI_PASSWORD
     echo
+    if [[ -z $UI_PASSWORD ]]; then
+        echo "[-] UI password cannot be empty. Exiting."
+        exit 1
+    fi
 
     read -p "Enter a Lightning Node alias: " NODE_ALIAS
 
@@ -165,6 +175,10 @@ pool-mode=disable
 loop-mode=disable
 autopilot.disable=true
 
+    if [[ $NETWORK == "mainnet" ]]; then
+        CONFIG_CONTENT=$(echo "$CONFIG_CONTENT" | sed "/pool-mode=disable/s/^/# /" | sed "/loop-mode=disable/s/^/# /" | sed "/autopilot.disable=true/s/^/# /")
+    fi
+
 # Bitcoin Configuration
 lnd.bitcoin.active=1
 lnd.bitcoin.node=bitcoind
@@ -175,6 +189,8 @@ lnd.bitcoind.zmqpubrawblock=tcp://127.0.0.1:28332
 lnd.bitcoind.zmqpubrawtx=tcp://127.0.0.1:28333
 
 # LND General Settings
+#lnd.wallet-unlock-password-file=/home/ubuntu/.lnd/wallet_password
+#lnd.wallet-unlock-allow-create=true
 lnd.debuglevel=debug
 lnd.alias=$NODE_ALIAS
 lnd.maxpendingchannels=3
@@ -190,33 +206,125 @@ lnd.protocol.option-scid-alias=true
 lnd.protocol.zero-conf=true
 lnd.protocol.custom-message=17"
 
-    if [[ $NETWORK == "mainnet" ]]; then
-        CONFIG_CONTENT=$(echo "$CONFIG_CONTENT" | sed "/pool-mode=disable/s/^/# /" | sed "/loop-mode=disable/s/^/# /" | sed "/autopilot.disable=true/s/^/# /")
-    fi
-
     echo "$CONFIG_CONTENT" > $LIT_CONF_FILE
     echo "[+] Configuration file created at $LIT_CONF_FILE."
 fi
 
 # Start litd and initialize wallet creation
 echo "[+] Starting litd to initialize LND wallet creation..."
-~/lightning-terminal/litd &
+$USER_HOME/lightning-terminal/litd &
 LITD_PID=$!
 sleep 120  # Allow litd to fully start
 
-echo "[+] Running lncli create to initialize wallet creation..."
-echo "$(cat $WALLET_PASSWORD_FILE)" | lncli create <<< "n\n" | while read -r line; do
-    echo "$line"
-    if [[ "$line" == *"Generating fresh cypher seed"* ]]; then
-        echo "[+] IMPORTANT: Below is your wallet seed phrase. BACK IT UP SECURELY!"
+if [[ -f $WALLET_PASSWORD_FILE && -s $WALLET_PASSWORD_FILE ]]; then
+    echo "[+] Running lncli create to initialize wallet..."
+    WALLET_OUTPUT=$(echo -e "$(cat $WALLET_PASSWORD_FILE)\n$(cat $WALLET_PASSWORD_FILE)\nn\n" | lncli create 2>&1)
+    echo "$WALLET_OUTPUT" | while read -r line; do
+        echo "$line"
+        if [[ "$line" == *"Generating fresh cypher seed"* ]]; then
+            echo "[+] IMPORTANT: Below is your wallet seed phrase. BACK IT UP SECURELY!"
+        fi
+    done
+
+    read -p "Have you backed up the wallet seed securely? Type 'yes' to confirm: " SEED_CONFIRM
+    if [[ "$SEED_CONFIRM" != "yes" ]]; then
+        echo "[-] You must back up your wallet seed before continuing. Exiting."
+        kill $LITD_PID
+        exit 1
     fi
+else
+    echo "[-] Wallet password file is missing or empty. Exiting."
+    kill $LITD_PID
+    exit 1
+fi
 
-done
+# Uncomment wallet unlock settings in the configuration file
+echo "[+] Uncommenting wallet unlock settings in the configuration file..."
+sed -i "s|^#lnd.wallet-unlock-password-file=/home/ubuntu/.lnd/wallet_password|lnd.wallet-unlock-password-file=$USER_HOME/.lnd/wallet_password|" $LIT_CONF_FILE
+sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=true|" $LIT_CONF_FILE
 
+echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."        exit 1
+    fi
+else
+    echo "[-] Wallet password file is missing or empty. Exiting."
+    kill $LITD_PID
+    exit 1
+fi
+
+sleep 30
 kill $LITD_PID
 echo "[+] Wallet creation completed successfully."
 
-# Completion message
-echo "\n[+] Lightning Terminal (litd) installation and wallet creation completed successfully!"
-echo "[+] You can check the service status with: sudo systemctl status litd"
-echo "[+] To view live logs, use: sudo journalctl -u litd -f"
+
+# Create systemd service file
+if [[ ! -f "$SERVICE_FILE" ]]; then
+    echo "[+] Creating systemd service file for litd..."
+    cat <<EOF > $SERVICE_FILE
+[Unit]
+Description=Litd Terminal Daemon
+Requires=bitcoind.service
+After=bitcoind.service
+
+[Service]
+ExecStart=$USER_HOME/go/bin/litd litd
+
+User=${SUDO_USER:-$USER}
+Group=${SUDO_USER:-$USER}
+
+Type=simple
+Restart=always
+RestartSec=120
+
+[Install]
+WantedBy=multi-user.target
+EOF
+else
+    echo "[!] Systemd service file already exists. Skipping creation."
+fi
+
+# Enable, reload, and start systemd service
+systemctl enable litd
+systemctl daemon-reload
+if ! systemctl is-active --quiet litd; then
+    systemctl start litd
+    echo "[+] litd service started."
+else
+    echo "[!] litd service is already running."
+fi
+
+cat <<EOF
+
+[+] Lightning Terminal Daemon (litd) built, configured, and service enabled successfully!
+
+
+             ________________________________________________
+            /                                                \
+           |    _________________________________________     |
+           |   |                                         |    |
+           |   |       ___(                        )     |    |
+           |   |      (                          _)      |    |
+           |   |     (_                       __))       |    |
+           |   |       ((                _____)          |    |
+           |   |         (_________)----'                |    |
+           |   |              _/  /                      |    |
+           |   |             /  _/                       |    |
+           |   |           _/  /                         |    |
+           |   |          / __/                          |    |
+           |   |        _/ /                             |    |
+           |   |       /__/                              |    |
+           |   |      /'                                 |    |
+           |   |_________________________________________|    |
+           |                                                  |
+            \_________________________________________________/
+                   \___________________________________/
+                ___________________________________________
+             _-'    .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.  --- `-_
+          _-'.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.--.  .-.-.`-_
+       _-'.-.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-`__`. .-.-.-.`-_
+    _-'.-.-.-.-. .-----.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-----. .-.-.-.-.`-_
+ _-'.-.-.-.-.-. .---.-. .-------------------------. .-.---. .---.-.-.-.`-_
+:-------------------------------------------------------------------------:
+`---._.-------------------------------------------------------------._.---'
+
+[+] Your Litd node is now up and running!
+EOF

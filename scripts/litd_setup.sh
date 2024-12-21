@@ -35,11 +35,13 @@ else
             echo "export PATH=\$HOME/go/bin:/usr/local/go/bin:\$PATH" >> ~/.profile
         fi
         
-        # Source .profile to make changes effective in the current session
-        source ~/.profile
+        # Apply changes to the current session
+        export GOPATH=$HOME/go
+        export PATH=$HOME/go/bin:/usr/local/go/bin:$PATH
 
         echo "[+] Go $GO_VERSION installed successfully!"
         echo "[+] Current Go version: $(go version)"
+        echo "[+] Current GOPATH: $GOPATH"
     else
         echo "[-] Failed to download Go tarball. Exiting."
         exit 1

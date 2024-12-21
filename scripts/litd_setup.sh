@@ -84,9 +84,11 @@ fi
 
 # Clone and build litd
 echo "[+] Checking if Lightning Terminal is already installed..."
-if command -v litd &> /dev/null; then
+if [[ -f "$USER_HOME/go/bin/litd" ]]; then
     echo "[+] Lightning Terminal (litd) is already installed. Skipping build."
 else
+    echo "[+] litd not found in $USER_HOME/go/bin. Proceeding with installation."
+
     echo "[+] Ensuring $USER_HOME/go directory exists and is owned by the current user..."
     if [[ -d "$USER_HOME/go" ]]; then
         echo "[+] Directory $USER_HOME/go already exists."
@@ -119,6 +121,8 @@ else
     if git checkout tags/$LITD_VERSION; then
         echo "[+] Checked out version $LITD_VERSION."
         echo "[+] Building litd... This might take a few minutes."
+        export GOPATH=$USER_HOME/go
+        export PATH=$USER_HOME/go/bin:/usr/local/go/bin:$PATH
         if make install && make go-install-cli; then
             echo "[+] litd successfully built and installed!"
             # Ensure binary ownership
@@ -261,7 +265,7 @@ fi
 
 # Start litd and initialize wallet creation
 echo "[+] Starting litd to initialize LND wallet creation..."
-$USER_HOME/lightning-terminal/litd &
+"$USER_HOME/go/bin/litd" &
 LITD_PID=$!
 sleep 120  # Allow litd to fully start
 

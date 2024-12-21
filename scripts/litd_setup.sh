@@ -7,7 +7,7 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 # Variables
 USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
-LIT_CONF_DIR="$HOME/.lit"
+LIT_CONF_DIR="$USER_HOME/.lit"
 LIT_CONF_FILE="$LIT_CONF_DIR/lit.conf"
 LND_DIR="$USER_HOME/.lnd"
 WALLET_PASSWORD_FILE="$LND_DIR/wallet_password"

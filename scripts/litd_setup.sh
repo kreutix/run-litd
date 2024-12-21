@@ -27,21 +27,21 @@ else
         sudo tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
         rm go$GO_VERSION.linux-amd64.tar.gz
         
-        # Check and append Go path info to .profile
-        if ! grep -q "export GOPATH=\$HOME/go" ~/.profile; then
-            echo "export GOPATH=\$HOME/go" >> ~/.profile
+        # Check and append Go path info to the invoking user's .profile
+        if ! grep -q "export GOPATH=\$USER_HOME/go" "$USER_HOME/.profile"; then
+            echo "export GOPATH=\$USER_HOME/go" >> "$USER_HOME/.profile"
         fi
-        if ! grep -q "export PATH=\$HOME/go/bin:/usr/local/go/bin:\$PATH" ~/.profile; then
-            echo "export PATH=\$HOME/go/bin:/usr/local/go/bin:\$PATH" >> ~/.profile
+        if ! grep -q "export PATH=\$USER_HOME/go/bin:/usr/local/go/bin:\$PATH" "$USER_HOME/.profile"; then
+            echo "export PATH=\$USER_HOME/go/bin:/usr/local/go/bin:\$PATH" >> "$USER_HOME/.profile"
         fi
         
-        # Apply changes to the current session
-        export GOPATH=$HOME/go
-        export PATH=$HOME/go/bin:/usr/local/go/bin:$PATH
+        # Apply changes for the current session explicitly
+        export GOPATH=$USER_HOME/go
+        export PATH=$USER_HOME/go/bin:/usr/local/go/bin:$PATH
 
         echo "[+] Go $GO_VERSION installed successfully!"
         echo "[+] Current Go version: $(go version)"
-        echo "[+] Current GOPATH: $GOPATH"
+        sudo -u ${SUDO_USER:-$USER} bash -c 'echo "[+] Current GOPATH: $GOPATH"'
     else
         echo "[-] Failed to download Go tarball. Exiting."
         exit 1

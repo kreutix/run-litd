@@ -213,6 +213,7 @@ else
 
     read -p "Enter a Lightning Node alias: " NODE_ALIAS
 
+    # Prepare the base configuration content
     CONFIG_CONTENT="# Litd Settings
 enablerest=true
 httpslisten=0.0.0.0:8443
@@ -222,10 +223,6 @@ lnd-mode=integrated
 pool-mode=disable
 loop-mode=disable
 autopilot.disable=true
-
-    if [[ $NETWORK == "mainnet" ]]; then
-        CONFIG_CONTENT=$(echo "$CONFIG_CONTENT" | sed "/pool-mode=disable/s/^/# /" | sed "/loop-mode=disable/s/^/# /" | sed "/autopilot.disable=true/s/^/# /")
-    fi
 
 # Bitcoin Configuration
 lnd.bitcoin.active=1
@@ -254,6 +251,12 @@ lnd.protocol.option-scid-alias=true
 lnd.protocol.zero-conf=true
 lnd.protocol.custom-message=17"
 
+    # Apply mainnet-specific logic
+    if [[ $NETWORK == "mainnet" ]]; then
+        CONFIG_CONTENT=$(echo "$CONFIG_CONTENT" | sed "/pool-mode=disable/s/^/# /" | sed "/loop-mode=disable/s/^/# /" | sed "/autopilot.disable=true/s/^/# /")
+    fi
+
+    # Write configuration content to file
     echo "$CONFIG_CONTENT" > $LIT_CONF_FILE
     echo "[+] Configuration file created at $LIT_CONF_FILE."
 

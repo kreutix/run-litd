@@ -100,28 +100,20 @@ This step can be done by following along with the checklist file found at [/chec
 
 This script runs checks to see what's been done as it goes, and so should be safe to run multiple times in case any run has been interupted. 
 
-There are two scripts to be run here, litd_setup.sh and then litd_setup2.sh. You'll need to run the first script and then end the current bash session and start a new one before running the second. 
+There are three scripts to be run here, litd_setup.sh, litd_setup2.sh and then litd_setup3.sh. You'll need to run the first script and then end the current bash session and start a new one before running the second. You will need to walk through the wallet creation process after running script two and before script three.
 
 Don't forget to make executable before trying to run them.
 
 ```$ chmod +x litd_setup.sh``` 
-```$ chmod +x litd_setups.sh```
+```$ chmod +x litd_setup2.sh```
+```$ chmod +x litd_setup3.sh```
 
 The scripts should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 
 ```$ sudo ./litd_setup.sh```
 ```$ sudo ./litd_setup2.sh```
+```$ sudo ./litd_setup3.sh```
 
-
-
-
-
-
-
-
-
-
-
-
+Happy Building! 
 
 

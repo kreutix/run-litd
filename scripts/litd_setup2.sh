@@ -210,6 +210,7 @@ sleep 120  # Allow litd to fully start
 if [[ -f $WALLET_PASSWORD_FILE && -s $WALLET_PASSWORD_FILE ]]; then
     echo "[+] Running lncli create to initialize wallet..."
     WALLET_OUTPUT=$(echo -e "$(cat $WALLET_PASSWORD_FILE)\n$(cat $WALLET_PASSWORD_FILE)\nn\n" | lncli create 2>&1)
+    echo "[+] Ran create function..."
     echo "$WALLET_OUTPUT" | while read -r line; do
         echo "$line"
         if [[ "$line" == *"Generating fresh cypher seed"* ]]; then
@@ -229,93 +230,8 @@ else
     exit 1
 fi
 
-# Uncomment wallet unlock settings in the configuration file
-echo "[+] Uncommenting wallet unlock settings in the configuration file..."
-sed -i "s|^#lnd.wallet-unlock-password-file=/home/ubuntu/.lnd/wallet_password|lnd.wallet-unlock-password-file=$USER_HOME/.lnd/wallet_password|" $LIT_CONF_FILE
-sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=true|" $LIT_CONF_FILE
-
-echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."        exit 1
-    fi
-else
-    echo "[-] Wallet password file is missing or empty. Exiting."
-    kill $LITD_PID
-    exit 1
-fi
-
-sleep 30
-kill $LITD_PID
-echo "[+] Wallet creation completed successfully."
-
-
-# Create systemd service file
-if [[ ! -f "$SERVICE_FILE" ]]; then
-    echo "[+] Creating systemd service file for litd..."
-    cat <<EOF > $SERVICE_FILE
-[Unit]
-Description=Litd Terminal Daemon
-Requires=bitcoind.service
-After=bitcoind.service
-
-[Service]
-ExecStart=$USER_HOME/go/bin/litd litd
-
-User=${SUDO_USER:-$USER}
-Group=${SUDO_USER:-$USER}
-
-Type=simple
-Restart=always
-RestartSec=120
-
-[Install]
-WantedBy=multi-user.target
-EOF
-else
-    echo "[!] Systemd service file already exists. Skipping creation."
-fi
-
-# Enable, reload, and start systemd service
-systemctl enable litd
-systemctl daemon-reload
-if ! systemctl is-active --quiet litd; then
-    systemctl start litd
-    echo "[+] litd service started."
-else
-    echo "[!] litd service is already running."
-fi
-
-cat <<EOF
-
-[+] Lightning Terminal Daemon (litd) built, configured, and service enabled successfully!
-
-
-             ________________________________________________
-            /                                                \
-           |    _________________________________________     |
-           |   |                                         |    |
-           |   |       ___(                        )     |    |
-           |   |      (                          _)      |    |
-           |   |     (_                       __))       |    |
-           |   |       ((                _____)          |    |
-           |   |         (_________)----'                |    |
-           |   |              _/  /                      |    |
-           |   |             /  _/                       |    |
-           |   |           _/  /                         |    |
-           |   |          / __/                          |    |
-           |   |        _/ /                             |    |
-           |   |       /__/                              |    |
-           |   |      /'                                 |    |
-           |   |_________________________________________|    |
-           |                                                  |
-            \_________________________________________________/
-                   \___________________________________/
-                ___________________________________________
-             _-'    .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.  --- `-_
-          _-'.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.--.  .-.-.`-_
-       _-'.-.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-`__`. .-.-.-.`-_
-    _-'.-.-.-.-. .-----.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-----. .-.-.-.-.`-_
- _-'.-.-.-.-.-. .---.-. .-------------------------. .-.---. .---.-.-.-.`-_
-:-------------------------------------------------------------------------:
-`---._.-------------------------------------------------------------._.---'
-
-[+] Your Litd node is now up and running!
-EOF
+echo "Now you have a task! Start litd on the command line, as the user who will be running litd."
+echo "Walk through the wallet creation process using $ lncli --network=[yournetwork] create."
+echo "Use the already generated password which can be found via $ cat ~/.lnd/wallet_password"
+echo "DO NOT FORGET TO PROPERLY BACKUP YOUR SEED!!!" 
+echo "Then, stop litd, and run the next script... almost there!!!"

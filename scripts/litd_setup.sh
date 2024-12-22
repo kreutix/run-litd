@@ -76,3 +76,4 @@ fi
 
 echo "[+] Installation and configuration complete!"
 echo "[+] Please verify that GoLang, NodeJS, and Yarn are properly installed."
+echo "[+] Then, end the current bash session and start a new one before running the next script."

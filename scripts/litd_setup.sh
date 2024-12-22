@@ -9,7 +9,7 @@ set -e  # Exit on any command failure
 USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
 GO_VERSION="1.21.0"
 NODE_VERSION="22.x"  # Stable Node.js version
-LITD_VERSION="v0.13.6-alpha"  # Version of litd to be installed
+LITD_VERSION="v0.14.0-alpha"  # Version of litd to be installed
 
 # Ensure Go directory exists
 if [[ ! -d "$USER_HOME/go/bin" ]]; then

@@ -21,7 +21,7 @@ echo "[+] Uncommenting wallet unlock settings in the configuration file..."
 sed -i "s|^#lnd.wallet-unlock-password-file=/home/ubuntu/.lnd/wallet_password|lnd.wallet-unlock-password-file=$USER_HOME/.lnd/wallet_password|" $LIT_CONF_FILE
 sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=true|" $LIT_CONF_FILE
 
-echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."        exit 1
+echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."   
     fi
 else
     echo "[-] Wallet password file is missing or empty. Exiting."

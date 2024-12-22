@@ -22,12 +22,6 @@ sed -i "s|^#lnd.wallet-unlock-password-file=/home/ubuntu/.lnd/wallet_password|ln
 sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=true|" $LIT_CONF_FILE
 
 echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."   
-    fi
-else
-    echo "[-] Wallet password file is missing or empty. Exiting."
-    kill $LITD_PID
-    exit 1
-fi
 
 # Create systemd service file
 if [[ ! -f "$SERVICE_FILE" ]]; then

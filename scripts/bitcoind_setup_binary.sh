@@ -61,13 +61,19 @@ fi
 echo "[+] SHA256 checksum verified successfully."
 
 # Import Bitcoin Core signing keys
-echo "[+] Importing Bitcoin Core signing keys..."
-git clone https://github.com/bitcoin-core/guix.sigs guix.sigs
-gpg --import guix.sigs/builder-keys/*
-if [[ $? -ne 0 ]]; then
-    echo "[-] Failed to import Bitcoin Core signing keys. Exiting."
-    exit 1
+echo "[+] Checking for 'guix.sigs' directory..."
+if [[ -d "guix.sigs" ]]; then
+    echo "[!] 'guix.sigs' directory already exists. Pulling the latest changes..."
+    cd guix.sigs
+    git pull --ff-only || { echo "[-] Failed to update 'guix.sigs'. Please resolve manually."; exit 1; }
+    cd ..
+else
+    echo "[+] Cloning 'guix.sigs' repository..."
+    git clone https://github.com/bitcoin-core/guix.sigs guix.sigs || { echo "[-] Failed to clone 'guix.sigs'. Exiting."; exit 1; }
 fi
+
+echo "[+] Importing Bitcoin Core signing keys..."
+gpg --import guix.sigs/builder-keys/* || { echo "[-] Failed to import Bitcoin Core signing keys. Exiting."; exit 1; }
 
 # Verify PGP signature of the SHA256SUMS file
 echo "[+] Verifying PGP signature of the SHA256SUMS file..."
@@ -78,11 +84,20 @@ if [[ $? -ne 0 ]]; then
 fi
 echo "[+] PGP signature verified successfully."
 
+# Extract and install Bitcoin Core binary
 echo "[+] Extracting Bitcoin Core binary..."
 tar -xzf $BITCOIN_TARBALL
-BITCOIN_EXTRACT_DIR=$(basename $BITCOIN_TARBALL .tar.gz)
-sudo install -m 0755 -o root -g root -t /usr/local/bin $BITCOIN_EXTRACT_DIR/bin/*
-rm -rf $BITCOIN_TARBALL $BITCOIN_EXTRACT_DIR
+BITCOIN_EXTRACT_DIR="bitcoin-${BITCOIN_VERSION}"
+
+if [[ -d "$BITCOIN_EXTRACT_DIR/bin" ]]; then
+    sudo install -m 0755 -o root -g root -t /usr/local/bin $BITCOIN_EXTRACT_DIR/bin/*
+    rm -rf $BITCOIN_TARBALL $BITCOIN_EXTRACT_DIR
+    echo "[+] Bitcoin Core binaries installed successfully."
+else
+    echo "[-] Expected directory structure not found: $BITCOIN_EXTRACT_DIR/bin. Exiting."
+    rm -rf $BITCOIN_TARBALL $BITCOIN_EXTRACT_DIR
+    exit 1
+fi
 
 # Head back to the user home directory
 cd "$USER_HOME"

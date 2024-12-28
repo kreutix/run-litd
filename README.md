@@ -70,23 +70,25 @@ This step can be done by following along with the checklist file found at [/chec
 
 ### Bitcoind Setup Helper Script
 
-Please double check the default values included in the config file in the script, lines 107-160, before running the script. Values such as network, passwords, etc will be selected/generated when the scritp runs. 
+Please double check the default values included in the config file in the script before running the script. Values such as network, passwords, etc will be selected/generated when the scritp runs. 
 
-You will want to run this script as the new users that was created in the server setup process.
+There are two scripts to chose from here, one which installs from source, bitcoind_setup.sh, and one which installs a binary, bitcoind_setup_binary.sh. Which ever script you chose you will want to run it as the new users that was created in the server setup process.
 
-This script defaults to running a pruned node set to 50GB. If you would like to run a full node or storge the blockchain data on an attached disk, you will need to edit the script accordingly. 
+These scripts default to running a pruned node set to 50GB. If you would like to run a full node or storge the blockchain data on an attached disk, you will need to edit the script accordingly. 
 
-This script runs checks to see what's been done as it goes, and so should be safe to run multiple times in case any run has been interupted. 
+They also run checks to see what's been done as they go, and so should be safe to run multiple times in case any run has been interupted. 
 
 If you originally cloned this repo to /root you may want to move it to /home/ubuntu and change the owner for easier running. 
 
 Don't forget to make executable before trying to run it. 
 
 ```$ chmod +x bitcoind_setup.sh``` 
+```$ chmod +x bitcoind_setup_binary.sh``` 
 
 The script should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 
 ```$ sudo ./bitcoind_setup.sh```
+```$ sudo ./bitcoind_setup_binary.sh``` 
 
 
 

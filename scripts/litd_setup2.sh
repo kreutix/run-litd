@@ -35,6 +35,16 @@ else
     echo "[+] Ensuring proper ownership of $USER_HOME/go..."
     sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} "$USER_HOME/go"
 
+    # Ensure required build tools are installed
+    echo "[+] Checking for required build tools..."
+    if ! command -v make &> /dev/null; then
+        echo "[+] 'make' not found. Installing build-essential package..."
+        sudo apt update
+        sudo apt install build-essential -y
+    else
+        echo "[+] 'make' is already installed."
+    fi
+
     echo "[+] Checking if Lightning Terminal repository already exists..."
     if [[ -d "$USER_HOME/lightning-terminal" ]]; then
         echo "[!] Repository already exists. Using existing directory."

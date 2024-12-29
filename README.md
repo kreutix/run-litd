@@ -96,7 +96,7 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 This step installs and runs litd. GoLang and NodeJS are installed, the repo is cloned and litd is built, a lit.conf file is generated, an LND wallet is created, the password saved, and the config set to auto unlock at startup, a systemd .service file is created, and litd is started!
 
-This step can be done by following along with the checklist file found at [/checklists/litd-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-checklist.txt) or by running the setup bash scripts at [/scripts/litd_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup.sh) and [/scripts/litd_setup2.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup2.sh) 
+This step can be done by following along with the checklist file found at [/checklists/litd-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-checklist.txt) or by running the setup bash scripts at [/scripts/litd_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup.sh), [/scripts/litd_setup2.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup2.sh) and [/scripts/litd_setup3.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup3.sh)
 
 ### Litd Setup Helper Script
 
@@ -104,11 +104,9 @@ This script runs checks to see what's been done as it goes, and so should be saf
 
 There are three scripts to be run here, litd_setup.sh, litd_setup2.sh and then litd_setup3.sh. You'll need to run the first script and then end the current bash session and start a new one before running the second. You will need to walk through the wallet creation process after running script two and before script three.
 
-Don't forget to make executable before trying to run them.
+Don't forget to make them executable before trying to run them.
 
-```$ chmod +x litd_setup.sh``` 
-```$ chmod +x litd_setup2.sh```
-```$ chmod +x litd_setup3.sh```
+```$ chmod +x litd_setup*```
 
 The scripts should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 

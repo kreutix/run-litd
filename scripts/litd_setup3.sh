@@ -59,7 +59,7 @@ else
     echo "[!] litd service is already running."
 fi
 
-cat <<EOF
+cat <<'EOF'
 
 [+] Lightning Terminal Daemon (litd) built, configured, and service enabled successfully!
 

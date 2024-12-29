@@ -211,36 +211,7 @@ lnd.protocol.custom-message=17"
     echo "[+] Ownership set to ${SUDO_USER:-$USER} for $LIT_CONF_FILE."
 fi
 
-# Start litd and initialize wallet creation
-echo "[+] Starting litd to initialize LND wallet creation..."
-sudo -u ${SUDO_USER:-$USER} "$USER_HOME/go/bin/litd" &
-LITD_PID=$!
-sleep 120  # Allow litd to fully start
-
-if [[ -f $WALLET_PASSWORD_FILE && -s $WALLET_PASSWORD_FILE ]]; then
-    echo "[+] Running lncli create to initialize wallet..."
-    WALLET_OUTPUT=$(echo -e "$(cat $WALLET_PASSWORD_FILE)\n$(cat $WALLET_PASSWORD_FILE)\nn\n" | lncli create 2>&1)
-    echo "[+] Ran create function..."
-    echo "$WALLET_OUTPUT" | while read -r line; do
-        echo "$line"
-        if [[ "$line" == *"Generating fresh cypher seed"* ]]; then
-            echo "[+] IMPORTANT: Below is your wallet seed phrase. BACK IT UP SECURELY!"
-        fi
-    done
-
-    read -p "Have you backed up the wallet seed securely? Type 'yes' to confirm: " SEED_CONFIRM
-    if [[ "$SEED_CONFIRM" != "yes" ]]; then
-        echo "[-] You must back up your wallet seed before continuing. Exiting."
-        kill $LITD_PID
-        exit 1
-    fi
-else
-    echo "[-] Wallet password file is missing or empty. Exiting."
-    kill $LITD_PID
-    exit 1
-fi
-
-echo "Now you have a task! Start litd on the command line, as the user who will be running litd."
+echo "Now you have a task! Start litd with $ litd, do so as the user who will be running litd."
 echo "Walk through the wallet creation process using $ lncli --network=[yournetwork] create."
 echo "Use the already generated password which can be found via $ cat ~/.lnd/wallet_password"
 echo "DO NOT FORGET TO PROPERLY BACKUP YOUR SEED!!!" 

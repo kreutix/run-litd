@@ -64,23 +64,23 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 ## Bitcoind Setup
 
-This step installs and runs bitcoind. The server is brought up to date, bitcoind dependancies are installed, the repo is cloned and bitcoind is built, a config file is created, a systemd .service file is created and bitcoind is run. 
+This step installs and runs bitcoind. The server is brought up to date, bitcoind dependancies are installed, bitcoind is built or the binary downloaded, a config file is created, a systemd .service file is created and bitcoind is run. There are two scripts and checklists here. One for building from source, and one for downloading a binary. 
 
-This step can be done by following along with the checklist file found at [/checklists/bitcoind-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-checklist.txt) or by running the setup bash script at [/scripts/bitcoind_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup.sh) 
+This step can be done by following along with the checklist file found here [/checklists/bitcoind-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-checklist.txt) and here [/checklists/bitcoind-setup-binary-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-binary-checklist.txt) or by running one of the setup bash scripts here [/scripts/bitcoind_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup.sh) or here [/scripts/bitcoind_setup_binary.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup_binary.sh) 
 
 ### Bitcoind Setup Helper Script
 
-Please double check the default values included in the config file in the script before running the script. Values such as network, passwords, etc will be selected/generated when the scritp runs. 
+Please double check the default values included in the config file in the scripts before running one of the scripts. Values such as network, passwords, etc will be selected/generated when the scripts run. 
 
 There are two scripts to chose from here, one which installs from source, bitcoind_setup.sh, and one which installs a binary, bitcoind_setup_binary.sh. Which ever script you chose you will want to run it as the new users that was created in the server setup process.
 
-These scripts default to running a pruned node set to 50GB. If you would like to run a full node or storge the blockchain data on an attached disk, you will need to edit the script accordingly. 
+These scripts default to running a pruned node set to 50GB. If you would like to run a full node or store the blockchain data on an attached disk, you will need to edit the script accordingly. 
 
 They also run checks to see what's been done as they go, and so should be safe to run multiple times in case any run has been interupted. 
 
 If you originally cloned this repo to /root you may want to move it to /home/ubuntu and change the owner for easier running. 
 
-Don't forget to make executable before trying to run it. 
+Don't forget to make the scripts executable before trying to run them. 
 
 ```$ chmod +x bitcoind_setup.sh``` 
 ```$ chmod +x bitcoind_setup_binary.sh``` 

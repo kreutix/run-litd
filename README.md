@@ -21,7 +21,7 @@ This guide contains checklists, example files, and helper scripts for getting a 
 The current verions of these checklists and scripts installs...
 
 - bitcoind v27.2
-- litd v0.13.6-alpha
+- litd v0.14.0-alpha
 
 ## Server Requirements
 

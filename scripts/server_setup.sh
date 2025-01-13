@@ -13,10 +13,6 @@ fi
 NEW_USER="ubuntu"
 SSH_DIR="/home/$NEW_USER/.ssh"
 AUTHORIZED_KEYS="$SSH_DIR/authorized_keys"
-TEAM_KEYS=(
-    "Key one"
-    "Key two"
-)
 
 # 1. Add a new user
 if id "$NEW_USER" &>/dev/null; then
@@ -48,15 +44,20 @@ else
   echo "authorized_keys file for $NEW_USER already exists. Checking for duplicate keys."
 fi
 
-# Add team keys if not already present
-for KEY in "${TEAM_KEYS[@]}"; do
+# Prompt for SSH keys
+echo "Please paste the SSH public keys you want to add. Each key should be on a new line."
+echo "When you are finished, press Ctrl+D to save and continue."
+USER_KEYS=$(cat)
+
+# Add keys provided by the user
+while IFS= read -r KEY; do
   if ! grep -qxF "$KEY" $AUTHORIZED_KEYS; then
     echo "$KEY" >> $AUTHORIZED_KEYS
     echo "Added key to authorized_keys."
   else
     echo "Key already exists in authorized_keys. Skipping."
   fi
-done
+done <<< "$USER_KEYS"
 
 echo "SSH keys verified for $NEW_USER."
 

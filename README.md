@@ -39,7 +39,7 @@ When running a full node on mainnet the server should have at least 800GB. It is
 
 When running a pruned node the below line should be uncommented in the bitcoin.conf file. 
 
-```prune=80000 # Prune to 80GB``` 
+```prune=50000 # Prune to 50GB``` 
 
 
 ## Server Prep

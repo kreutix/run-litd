@@ -194,7 +194,17 @@ lnd.protocol.simple-taproot-chans=true
 lnd.protocol.simple-taproot-overlay-chans=true
 lnd.protocol.option-scid-alias=true
 lnd.protocol.zero-conf=true
-lnd.protocol.custom-message=17"
+lnd.protocol.custom-message=17
+
+# Taproot Assets Settings
+#taproot-assets.rpclisten=0.0.0.0:10029
+#taproot-assets.allow-public-uni-proof-courier=true
+#taproot-assets.allow-public-stats=true
+#taproot-assets.universe.public-access=rw
+#taproot-assets.experimental.rfq.skipacceptquotepricecheck=true
+#taproot-assets.experimental.rfq.priceoracleaddress=rfqrpc://127.0.0.1:8095
+#taproot-assets.experimental.rfq.priceoracleaddress=use_mock_price_oracle_service_promise_to_not_use_on_mainnet
+#taproot-assets.experimental.rfq.mockoracleassetsperbtc=100000000"
 
     # Apply mainnet-specific logic
     if [[ $NETWORK == "mainnet" ]]; then

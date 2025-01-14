@@ -151,6 +151,8 @@ mkdir -p $BITCOIN_DIR
 sudo chown -R ${SUDO_USER:-$USER}:${SUDO_USER:-$USER} $BITCOIN_DIR
 cat <<EOF > $BITCOIN_CONF
 # Set the best block hash here:
+# For v27.2 on Signet and good hash to try is... 
+# 00000131de56604f752c0b072f468a2904e5d807e7ee79bd32a5be00bef17b2e
 #assumevalid=
 
 # Run as a daemon mode without an interactive shell

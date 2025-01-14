@@ -94,15 +94,21 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 ## Litd Setup
 
-This step installs and runs litd. GoLang and NodeJS are installed, the repo is cloned and litd is built, a lit.conf file is generated, an LND wallet is created, the password saved, and the config set to auto unlock at startup, a systemd .service file is created, and litd is started!
+This step installs and runs litd. When installing from source GoLang and NodeJS are installed, the repo is cloned and litd is built. When installing from binary the appropriate files are downloaded, a lit.conf file is generated, an LND wallet is created, the password saved, and the config set to auto unlock at startup, a systemd .service file is created, and litd is started!
 
-This step can be done by following along with the checklist file found at [/checklists/litd-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-checklist.txt) or by running the setup bash scripts at [/scripts/litd_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup.sh), [/scripts/litd_setup2.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup2.sh) and [/scripts/litd_setup3.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup3.sh)
+Litd installation is helped with this repo in a number of ways. You can follow along with the setup  checklist files, the install from source checklist is here [/checklists/litd-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-checklist.txt) and the install from binary checklist is here [/checklists/litd-setup-binary-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/litd-setup-binary-checklist.txt)
+
+Bash scripts can also be used to install either from source or from binary. To install from source run the setup bash scripts at [/scripts/litd_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup.sh), [/scripts/litd_setup2.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup2.sh) and [/scripts/litd_setup3.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup3.sh)
+
+To install a binary run the setup bash scripts at [/scripts/litd_setup_binary.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup_binary.sh) and [/scripts/litd_setup3.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/litd_setup3.sh)
 
 ### Litd Setup Helper Script
 
-This script runs checks to see what's been done as it goes, and so should be safe to run multiple times in case any run has been interupted. 
+These scripts run checks to see what's been done as they go, and so should be safe to run multiple times in case any run has been interupted. 
 
-There are three scripts to be run here, litd_setup.sh, litd_setup2.sh and then litd_setup3.sh. You'll need to run the first script and then end the current bash session and start a new one before running the second. You will need to walk through the wallet creation process after running script two and before script three.
+If you are installing from source there are three scripts to be run here, litd_setup.sh, litd_setup2.sh and then litd_setup3.sh. You'll need to run the first script and then end the current bash session and start a new one before running the second. You will need to walk through the wallet creation process after running script two and before script three.
+
+If you are installing the binary there are two script to be run here, litd_setup_binary.sh and litd_setup3.sh. After running the litd_setup_binary.sh script you will need to walk through the wallet creation process before running litd_setup3.sh.
 
 Don't forget to make them executable before trying to run them.
 
@@ -111,7 +117,8 @@ Don't forget to make them executable before trying to run them.
 The scripts should be run with sudo. Don't worry, repo's, files, etc. will be owned by your current user, a new user called ubuntu if the server_setup script was used).
 
 ```$ sudo ./litd_setup.sh```
-```$ sudo ./litd_setup2.sh```
+```$ sudo ./litd_setup_binary.sh```
+```$ sudo ./litd_setup2.sh``` 
 ```$ sudo ./litd_setup3.sh```
 
 Happy Building! 

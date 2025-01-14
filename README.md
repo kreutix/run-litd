@@ -16,7 +16,7 @@ Important!: These examples and scripts are designed to help developers get set u
 
 ## Instructions
 
-This guide contains checklists, example files, and helper scripts for getting a Litd node up and running on a ubuntu server. There are three major sections to the guide, server prep, bitcoind setup, and litd setup. In each of these sections you will find a description of what needs to happen, a check list to follow, links to example files, and, if you prefer, bash scripts that will run through the checklists for you! 
+This guide contains checklists, example files, and helper scripts for getting a Litd node up and running on a ubuntu server. These scripts have been tested on Ubuntu 24.04. There are three major sections to the guide, server prep, bitcoind setup, and litd setup. In each of these sections you will find a description of what needs to happen, a check list to follow, links to example files, and, if you prefer, bash scripts that will run through the checklists for you! 
 
 The current verions of these checklists and scripts installs...
 

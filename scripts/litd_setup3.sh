@@ -23,6 +23,15 @@ sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=t
 
 echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."   
 
+# Find the path to the litd binary
+LITD_PATH=$(which litd)
+
+# Ensure litd binary is found
+if [[ -z "$LITD_PATH" ]]; then
+    echo "[!] Error: 'litd' binary not found in PATH."
+    exit 1
+fi
+
 # Create systemd service file
 if [[ ! -f "$SERVICE_FILE" ]]; then
     echo "[+] Creating systemd service file for litd..."
@@ -33,7 +42,7 @@ Requires=bitcoind.service
 After=bitcoind.service
 
 [Service]
-ExecStart=$USER_HOME/go/bin/litd litd
+ExecStart=$LITD_PATH litd
 
 User=${SUDO_USER:-$USER}
 Group=${SUDO_USER:-$USER}

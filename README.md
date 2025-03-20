@@ -4,6 +4,8 @@ Notes and helper scripts for setting up and running a Litd node.
 
 Important!: These examples and scripts are designed to help developers get set up quickly to begin testing and application development. Please do not trust these files on your production build.  
 
+You can view a demo video of these scripts [here](https://youtu.be/lopHP_nF0tE)
+
 ## Contents
 
 1. [Instructions](https://github.com/HannahMR/run-litd/#instructions)
@@ -46,13 +48,13 @@ When running a pruned node the below line should be uncommented in the bitcoin.c
 
 ## Server Prep
 
-This step prepares the server. A new ubuntu user with sudo access is created. SSH keys are added. security is tightened by disabling root login and password login.
+This step prepares the server. A new ubuntu user with sudo access is created. SSH keys are added. security is tightened by disabling root login and password authentication. After you run it you'll need to log into the server as the Ubuntu user via SSH. 
 
 This step can be done by following along with the checklist file found at [/checklists/server-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/server-setup-checklist.txt) or by running the setup bash script at [/scripts/server_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/server_setup.sh) 
 
 ### Server Prep Helper Script
 
-You will need to add your team's keys ssh pubkeys to the script on line 17. 
+You will be propted to paste in your team's ssh keys as the script runs.   
 
 Don't forget to make executable before trying to run it. 
 
@@ -62,11 +64,16 @@ The script should be run with sudo. Don't worry, repo's, files, etc. will be own
 
 ```$ sudo ./server_setup.sh```
 
+You'll like want to move the run-litd repo to the new ubuntu users home directory. 
 
+```$ sudo mv /root/run-litd/ /home/ubuntu/run-litd/```
+```$ sudo mv chown -R ubuntu:ubuntu /home/ubuntu/run-litd/```
 
 ## Bitcoind Setup
 
 This step installs and runs bitcoind. The server is brought up to date, bitcoind dependancies are installed, bitcoind is built or the binary downloaded, a config file is created, a systemd .service file is created and bitcoind is run. There are two scripts and checklists here. One for building from source, and one for downloading a binary. 
+
+As the scripts run you will be prompted to select signet or mainnet. 
 
 This step can be done by following along with the checklist file found here [/checklists/bitcoind-setup-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-checklist.txt) and here [/checklists/bitcoind-setup-binary-checklist.txt](https://github.com/HannahMR/run-litd/blob/main/checklists/bitcoind-setup-binary-checklist.txt) or by running one of the setup bash scripts here [/scripts/bitcoind_setup.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup.sh) or here [/scripts/bitcoind_setup_binary.sh](https://github.com/HannahMR/run-litd/blob/main/scripts/bitcoind_setup_binary.sh) 
 

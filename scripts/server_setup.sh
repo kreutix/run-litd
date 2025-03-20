@@ -46,7 +46,7 @@ fi
 
 # Prompt for SSH keys
 echo "Please paste the SSH public keys you want to add. Each key should be on a new line."
-echo "When you are finished, press Ctrl+D to save and continue."
+echo "When you are finished, press Enter, then Ctrl+D to save and continue."
 USER_KEYS=$(cat)
 
 # Add keys provided by the user

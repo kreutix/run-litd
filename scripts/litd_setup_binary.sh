@@ -223,6 +223,7 @@ lnd.protocol.custom-message=17
 fi
 
 echo "Now you have a task! Start litd with $ litd, do so as the user who will be running litd."
+echo "In a new tab..."
 echo "Walk through the wallet creation process using $ lncli --network=[yournetwork] create."
 echo "Use the already generated password which can be found via $ cat ~/.lnd/wallet_password"
 echo "DO NOT FORGET TO PROPERLY BACKUP YOUR SEED!!!" 

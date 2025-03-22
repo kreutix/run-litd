@@ -23,8 +23,8 @@ sed -i "s|^#lnd.wallet-unlock-allow-create=true|lnd.wallet-unlock-allow-create=t
 
 echo "[+] Wallet unlock settings have been enabled in $LIT_CONF_FILE."   
 
-# Find the path to the litd binary
-LITD_PATH=$(which litd)
+# Find the path to the litd binary using the original user’s login shell
+LITD_PATH=$(sudo -i -u "${SUDO_USER:-$USER}" which litd)
 
 # Ensure litd binary is found
 if [[ -z "$LITD_PATH" ]]; then

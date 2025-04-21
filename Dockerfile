@@ -11,9 +11,9 @@ RUN chown -R ubuntu:ubuntu /home/ubuntu/setup && \
 # Install required packages
 RUN apt-get update && \
     apt-get install -y curl wget git vim sudo && \
-    ./scripts/bitcoind_setup.sh && \
-    ./scripts/litd_setup.sh && \
-    ./scripts/litd_setup2a.sh && \
+    /home/ubuntu/setup/bitcoind_setup.sh && \
+    /home/ubuntu/setup/litd_setup.sh && \
+    /home/ubuntu/setup/litd_setup2a.sh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

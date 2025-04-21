@@ -11,9 +11,6 @@ RUN chown -R ubuntu:ubuntu /home/ubuntu/setup && \
 # Install required packages
 RUN apt-get update && \
     apt-get install -y curl wget git vim sudo && \
-    /home/ubuntu/setup/bitcoind_setup.sh && \
-    /home/ubuntu/setup/litd_setup.sh && \
-    /home/ubuntu/setup/litd_setup2a.sh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -22,6 +19,19 @@ RUN apt-get update && \
 RUN usermod -aG sudo ubuntu && \
     echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu && \
     chmod 0440 /etc/sudoers.d/ubuntu
+
+# Run setup scripts (normal)
+# RUN /home/ubuntu/setup/bitcoind_setup.sh && \
+#     /home/ubuntu/setup/litd_setup.sh && \
+#     /home/ubuntu/setup/litd_setup2a.sh && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
+
+# Run setup scripts (binary)
+RUN /home/ubuntu/setup/bitcoind_setup_binary.sh && \
+    /home/ubuntu/setup/litd_setup_binary.sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set the user
 USER ubuntu
